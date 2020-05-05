@@ -62,6 +62,18 @@
       context.fillText(text, background.getStage().width() / 2, 40);
     }
 
+    function isNearOutline(animal, ex, ey) {
+      var a = animal;
+      var ax = a.x();
+      var ay = a.y();
+
+      if (ax > ex - 20 && ax < ex + 20 && ay > ey - 20 && ay < ey + 20) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     function initStage(images) {
       var stage = new Konva.Stage({
         container: 'container',
@@ -77,6 +89,47 @@
             image: images[key],
             x: paths[key].sx,
             y: paths[key].sy,
+            draggable: true
+          });
+          var privKey = key
+          // make animal glow on mouseover
+          animal.on('mouseover', function () {
+            animal.image(images[privKey + '_glow']);
+            animalLayer.draw();
+            document.body.style.cursor = 'pointer';
+          });
+          // return animal on mouseout
+          animal.on('mouseout', function () {
+            animal.image(images[privKey]);
+            animalLayer.draw();
+            document.body.style.cursor = 'default';
+          });
+          animal.on('dragstart', function () {
+            this.moveToTop();
+            animalLayer.draw();
+          });
+          animal.on('dragmove', function () {
+            document.body.style.cursor = 'pointer';
+          });
+          /*
+           * check if animal is in the right spot and
+           * snap into place if it is
+           */
+          animal.on('dragend', function () {
+            var home = paths[privKey]
+            if (!animal.inRightPlace && isNearOutline(animal, home.ex, home.ey)) {
+              animal.position({
+                x: home.ex,
+                y: home.ey
+              });
+              animalLayer.draw();
+              animal.inRightPlace = true;
+
+              // disable drag and drop
+              setTimeout(function () {
+                animal.draggable(false);
+              }, 50);
+            }
           });
           animalLayer.add(animal);
         }
@@ -84,7 +137,7 @@
 
         var setAnimalHome = function () {
           var animal = new Konva.Image({
-            image: images[key+"_black"],
+            image: images[key + "_black"],
             x: paths[key].ex,
             y: paths[key].ey,
           });

@@ -78,13 +78,26 @@
             x: paths[key].sx,
             y: paths[key].sy,
           });
+          var privKey = key
+          // make animal glow on mouseover
+          animal.on('mouseover', function () {
+            animal.image(images[privKey + '_glow']);
+            animalLayer.draw();
+            document.body.style.cursor = 'pointer';
+          });
+          // return animal on mouseout
+          animal.on('mouseout', function () {
+            animal.image(images[privKey]);
+            animalLayer.draw();
+            document.body.style.cursor = 'default';
+          });
           animalLayer.add(animal);
         }
         setAnimal()
 
         var setAnimalHome = function () {
           var animal = new Konva.Image({
-            image: images[key+"_black"],
+            image: images[key + "_black"],
             x: paths[key].ex,
             y: paths[key].ey,
           });
