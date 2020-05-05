@@ -32,6 +32,21 @@
       var context = background.getContext()
       context.drawImage(bkimage, 0, 0);
     };
+
+    var animalLayer = new Konva.Layer();
+    var monkeyPos = { x: 275, y: 70 }
+    var monkey = new Image();
+    monkey.src = 'assets/monkey.png';
+    monkey.onload = function () {
+      var monkeyImg = new Konva.Image({
+        image: monkey,
+        x: monkeyPos.x,
+        y: monkeyPos.y,
+      });
+      animalLayer.add(monkeyImg)
+      stage.add(animalLayer);
+    };
+
   </script>
 </body>
 
